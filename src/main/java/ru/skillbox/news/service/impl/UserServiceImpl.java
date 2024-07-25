@@ -1,0 +1,51 @@
+package ru.skillbox.news.service.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import ru.skillbox.news.model.User;
+import ru.skillbox.news.repository.UserRepository;
+import ru.skillbox.news.service.UserService;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    @Override
+    public Page<User> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public User getById(Long id) {
+        return userRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public User create(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User update(User user) {
+        Optional<User> existingUser = userRepository.findById(user.getId());
+        if (existingUser.isEmpty()) {
+            throw new NoSuchElementException("Пользователь не найден!");
+        }
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+}
