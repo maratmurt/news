@@ -17,10 +17,10 @@ public class User {
 
     private String email;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "author")
     private List<Article> articles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
 }

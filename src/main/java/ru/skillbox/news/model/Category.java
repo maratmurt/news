@@ -16,7 +16,7 @@ public class Category {
 
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "category")
     private List<Article> articles = new ArrayList<>();
 
 }

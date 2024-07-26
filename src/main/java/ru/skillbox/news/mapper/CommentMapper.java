@@ -1,33 +1,41 @@
 package ru.skillbox.news.mapper;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.skillbox.news.dto.comment.CommentRequest;
 import ru.skillbox.news.dto.comment.CommentResponse;
+import ru.skillbox.news.model.Article;
 import ru.skillbox.news.model.Comment;
-import ru.skillbox.news.service.ArticleService;
-import ru.skillbox.news.service.UserService;
+import ru.skillbox.news.model.User;
+import ru.skillbox.news.repository.ArticleRepository;
+import ru.skillbox.news.repository.UserRepository;
 
-@Component
-@RequiredArgsConstructor
-public class CommentMapper {
+@Mapper(componentModel = "spring", uses = {ArticleRepository.class, UserRepository.class})
+public abstract class CommentMapper {
 
-    private final ArticleService articleService;
+    @Autowired
+    protected ArticleRepository articleRepository;
 
-    private final UserService userService;
+    @Autowired
+    protected UserRepository userRepository;
 
-    public Comment toEntity(CommentRequest commentRequest) {
-        Comment comment = new Comment();
+    @Mapping(target = "user", source = "userId", qualifiedByName = "loadUserById")
+    @Mapping(target = "article", source = "articleId", qualifiedByName = "loadArticleById")
+    public abstract Comment toEntity(CommentRequest commentRequest);
 
-        comment.setArticle(articleService.getById(commentRequest.articleId()));
-        comment.setUser(userService.getById(commentRequest.userId()));
-        comment.setText(commentRequest.text());
+    @Mapping(target = "userName", source = "user.name")
+    public abstract CommentResponse toResponse(Comment comment);
 
-        return comment;
+    @Named("loadUserById")
+    public User loadUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
     }
 
-    public CommentResponse toResponse(Comment comment) {
-        return new CommentResponse(comment.getUser().getName(), comment.getText());
+    @Named("loadArticleById")
+    public Article loadArticleById(Long articleId) {
+        return articleRepository.findById(articleId).orElseThrow();
     }
 
 }
