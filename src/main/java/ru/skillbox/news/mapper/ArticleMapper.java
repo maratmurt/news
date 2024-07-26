@@ -7,6 +7,7 @@ import ru.skillbox.news.dto.article.ArticleResponse;
 import ru.skillbox.news.dto.article.ArticleWithCommentsResponse;
 import ru.skillbox.news.dto.comment.CommentResponse;
 import ru.skillbox.news.model.Article;
+import ru.skillbox.news.service.CategoryService;
 import ru.skillbox.news.service.CommentService;
 import ru.skillbox.news.service.UserService;
 
@@ -16,7 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleMapper {
 
+    //todo: remove services and mappers
     private final UserService userService;
+
+    private final CategoryService categoryService;
 
     private final CommentService commentService;
 
@@ -26,6 +30,7 @@ public class ArticleMapper {
         Article article = new Article();
 
         article.setAuthor(userService.getById(articleRequest.authorId()));
+        article.setCategory(categoryService.getById(articleRequest.categoryId()));
         article.setTitle(articleRequest.title());
         article.setContent(articleRequest.content());
 
@@ -43,7 +48,8 @@ public class ArticleMapper {
     }
 
     public ArticleWithCommentsResponse toWithCommentsResponse(Article article) {
-        List<CommentResponse> comments = commentService.getAllByArticleId(article.getId()).stream().map(commentMapper::toResponse).toList();
+        List<CommentResponse> comments = commentService.getAllByArticleId(article.getId()).stream()
+                .map(commentMapper::toResponse).toList();
         return new ArticleWithCommentsResponse(
                 article.getTitle(),
                 article.getContent(),

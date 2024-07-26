@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.news.aop.CheckUserId;
-import ru.skillbox.news.dto.article.ArticleListResponse;
-import ru.skillbox.news.dto.article.ArticleRequest;
-import ru.skillbox.news.dto.article.ArticleResponse;
-import ru.skillbox.news.dto.article.ArticleWithCommentsResponse;
+import ru.skillbox.news.dto.article.*;
 import ru.skillbox.news.mapper.ArticleMapper;
 import ru.skillbox.news.model.Article;
 import ru.skillbox.news.service.ArticleService;
@@ -26,8 +23,15 @@ public class ArticleController {
 
     @GetMapping
     public ResponseEntity<ArticleListResponse> getAll(@RequestParam(defaultValue = "0") int page,
-                                                      @RequestParam(defaultValue = "10") int size) {
-        List<ArticleResponse> articles = articleService.getAll(page, size)
+                                                      @RequestParam(defaultValue = "10") int size,
+                                                      @RequestBody(required = false) ArticleFilter filter) {
+        List<Long> categoryIds = null, authorIds = null;
+        if (filter != null) {
+            categoryIds = filter.categoryIds();
+            authorIds = filter.authorIds();
+        }
+        List<ArticleResponse> articles = articleService
+                .getAllFiltered(page, size, categoryIds, authorIds)
                 .map(articleMapper::toResponse).toList();
         return ResponseEntity.ok(new ArticleListResponse(articles));
     }
@@ -38,10 +42,10 @@ public class ArticleController {
     }
 
     @PostMapping
-    public ResponseEntity<ArticleResponse> create(@RequestBody ArticleRequest articleRequest) {
+    public ResponseEntity<ArticleWithCommentsResponse> create(@RequestBody ArticleRequest articleRequest) {
         Article article = articleService.create(articleMapper.toEntity(articleRequest));
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(articleMapper.toResponse(article));
+                .body(articleMapper.toWithCommentsResponse(article));
     }
 
     @CheckUserId

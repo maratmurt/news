@@ -3,11 +3,16 @@ package ru.skillbox.news.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.skillbox.news.model.Article;
+import ru.skillbox.news.model.ArticleSpecification;
 import ru.skillbox.news.repository.ArticleRepository;
+import ru.skillbox.news.repository.CategoryRepository;
+import ru.skillbox.news.repository.UserRepository;
 import ru.skillbox.news.service.ArticleService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -16,6 +21,10 @@ import java.util.Optional;
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
+
+    private final CategoryRepository categoryRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public Page<Article> getAll(int page, int size) {
@@ -45,5 +54,27 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void deleteById(Long id) {
         articleRepository.deleteById(id);
+    }
+
+    public Page<Article> getAllFiltered(int page, int size, List<Long> categoryIds, List<Long> authorIds) {
+        Specification<Article> specification = Specification.where(null);
+
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            specification = specification.and(
+                    ArticleSpecification.byCategories(
+                            categoryRepository.findAllById(categoryIds)
+                    )
+            );
+        }
+
+        if (authorIds != null && !authorIds.isEmpty()) {
+            specification = specification.and(
+                    ArticleSpecification.byAuthors(
+                            userRepository.findAllById(authorIds)
+                    )
+            );
+        }
+
+        return articleRepository.findAll(specification, PageRequest.of(page, size));
     }
 }
