@@ -27,7 +27,7 @@ public class Article {
     @Column(columnDefinition = "text")
     private String content;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @Column(name = "comment_count")

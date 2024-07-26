@@ -1,10 +1,10 @@
 package ru.skillbox.news.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity(name = "category")
@@ -15,5 +15,8 @@ public class Category {
     private Long id;
 
     private String name;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Article> articles = new ArrayList<>();
 
 }
