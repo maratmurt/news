@@ -56,23 +56,16 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.deleteById(id);
     }
 
+    @Override
     public Page<Article> getAllFiltered(int page, int size, List<Long> categoryIds, List<Long> authorIds) {
         Specification<Article> specification = Specification.where(null);
 
         if (categoryIds != null && !categoryIds.isEmpty()) {
-            specification = specification.and(
-                    ArticleSpecification.byCategories(
-                            categoryRepository.findAllById(categoryIds)
-                    )
-            );
+            specification = specification.and(ArticleSpecification.byCategories(categoryIds));
         }
 
         if (authorIds != null && !authorIds.isEmpty()) {
-            specification = specification.and(
-                    ArticleSpecification.byAuthors(
-                            userRepository.findAllById(authorIds)
-                    )
-            );
+            specification = specification.and(ArticleSpecification.byAuthors(authorIds));
         }
 
         return articleRepository.findAll(specification, PageRequest.of(page, size));
