@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.skillbox.news.model.Article;
 import ru.skillbox.news.model.ArticleSpecification;
 import ru.skillbox.news.repository.ArticleRepository;
-import ru.skillbox.news.repository.CategoryRepository;
-import ru.skillbox.news.repository.UserRepository;
 import ru.skillbox.news.service.ArticleService;
 
 import java.util.List;
@@ -21,10 +19,6 @@ import java.util.Optional;
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
-
-    private final CategoryRepository categoryRepository;
-
-    private final UserRepository userRepository;
 
     @Override
     public Page<Article> getAll(int page, int size) {

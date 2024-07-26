@@ -1,61 +1,23 @@
 package ru.skillbox.news.mapper;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.skillbox.news.dto.article.ArticleRequest;
 import ru.skillbox.news.dto.article.ArticleResponse;
 import ru.skillbox.news.dto.article.ArticleWithCommentsResponse;
-import ru.skillbox.news.dto.comment.CommentResponse;
 import ru.skillbox.news.model.Article;
-import ru.skillbox.news.service.CategoryService;
-import ru.skillbox.news.service.CommentService;
-import ru.skillbox.news.service.UserService;
 
-import java.util.List;
+@Mapper(componentModel = "spring", uses = {CommentMapper.class})
+public interface ArticleMapper {
 
-@Component
-@RequiredArgsConstructor
-public class ArticleMapper {
+    @Mapping(target = "author", source = "author.name")
+    @Mapping(target = "category", source = "category.name")
+    ArticleResponse toResponse(Article article);
 
-    //todo: remove services and mappers
-    private final UserService userService;
+    @Mapping(target = "author", source = "author.name")
+    @Mapping(target = "category", source = "category.name")
+    ArticleWithCommentsResponse toWithCommentsResponse(Article article);
 
-    private final CategoryService categoryService;
+    Article toEntity(ArticleRequest articleRequest);
 
-    private final CommentService commentService;
-
-    private final CommentMapper commentMapper;
-
-    public Article toEntity(ArticleRequest articleRequest) {
-        Article article = new Article();
-
-        article.setAuthor(userService.getById(articleRequest.authorId()));
-        article.setCategory(categoryService.getById(articleRequest.categoryId()));
-        article.setTitle(articleRequest.title());
-        article.setContent(articleRequest.content());
-
-        return article;
-    }
-
-    public ArticleResponse toResponse(Article article) {
-        return new ArticleResponse(
-                article.getTitle(),
-                article.getContent(),
-                article.getAuthor().getName(),
-                article.getCategory().getName(),
-                commentService.countByArticleId(article.getId())
-        );
-    }
-
-    public ArticleWithCommentsResponse toWithCommentsResponse(Article article) {
-        List<CommentResponse> comments = commentService.getAllByArticleId(article.getId()).stream()
-                .map(commentMapper::toResponse).toList();
-        return new ArticleWithCommentsResponse(
-                article.getTitle(),
-                article.getContent(),
-                article.getAuthor().getName(),
-                article.getCategory().getName(),
-                comments
-        );
-    }
 }

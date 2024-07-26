@@ -8,6 +8,4 @@ public interface CommentService extends CrudService<Comment> {
 
     List<Comment> getAllByArticleId(Long articleId);
 
-    Long countByArticleId(Long articleId);
-
 }

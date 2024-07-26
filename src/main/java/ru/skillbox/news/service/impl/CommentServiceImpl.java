@@ -39,6 +39,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment create(Comment comment) {
+        Article article = articleRepository.findById(comment.getArticle().getId()).orElseThrow();
+        article.setCommentCount(article.getCommentCount() + 1);
+        articleRepository.save(article);
         return commentRepository.save(comment);
     }
 
@@ -54,11 +57,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteById(Long id) {
-        commentRepository.deleteById(id);
-    }
-
-    public Long countByArticleId(Long articleId) {
-        Article article = articleRepository.findById(articleId).orElseThrow();
-        return commentRepository.countByArticle(article);
+        Comment comment = commentRepository.findById(id).orElseThrow();
+        Article article = articleRepository.findById(comment.getArticle().getId()).orElseThrow();
+        article.setCommentCount(article.getCommentCount() - 1);
+        articleRepository.save(article);
+        commentRepository.delete(comment);
     }
 }
