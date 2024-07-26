@@ -1,6 +1,8 @@
 package ru.skillbox.news.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -22,6 +24,8 @@ public class Comment {
     @JoinColumn(name = "article_id")
     private Article article;
 
+    @NotNull(message = "Это поле должно быть заполнено!")
+    @Size(min = 2, max = 1000, message = "Текст должен быть длиной не меньше 2 символов!")
     private String text;
 
 }

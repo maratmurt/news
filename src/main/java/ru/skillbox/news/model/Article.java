@@ -1,6 +1,7 @@
 package ru.skillbox.news.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -19,16 +20,20 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
+    @NotNull(message = "Это поле должно быть заполнено!")
     private User author;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
+    @NotNull(message = "Это поле должно быть заполнено!")
     private Category category;
 
+    @NotNull(message = "Это поле должно быть заполнено!")
     private String title;
 
     @Column(columnDefinition = "text")
+    @NotNull(message = "Это поле должно быть заполнено!")
     private String content;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, orphanRemoval = true)
