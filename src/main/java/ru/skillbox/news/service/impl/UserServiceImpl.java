@@ -26,7 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Long id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + id + " не найден!"));
     }
 
     @Override
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
     public User update(User user) {
         Optional<User> existingUser = userRepository.findById(user.getId());
         if (existingUser.isEmpty()) {
-            throw new NoSuchElementException("Пользователь не найден!");
+            throw new NoSuchElementException("Пользователь с ID " + user.getId() + " не найден!");
         }
 
         return userRepository.save(user);
@@ -46,6 +47,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + id + " не найден!"));
+        userRepository.delete(user);
     }
 }

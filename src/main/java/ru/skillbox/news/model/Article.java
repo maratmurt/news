@@ -20,13 +20,11 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @NotNull(message = "Это поле должно быть заполнено!")
     private User author;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @NotNull(message = "Это поле должно быть заполнено!")
     private Category category;
 
     @NotNull(message = "Это поле должно быть заполнено!")

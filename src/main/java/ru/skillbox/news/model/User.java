@@ -17,7 +17,7 @@ public class User {
     private Long id;
 
     @NotNull(message = "Это поле должно быть заполнено!")
-    @Size(min = 2, max = 30, message = "Имя должно быть длиной от 2 до 30 символов!")
+    @Size(min = 2, max = 30, message = "Имя должно быть длиной от {min} до {max} символов!")
     private String name;
 
     @NotNull(message = "Это поле должно быть заполнено!")

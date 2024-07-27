@@ -26,7 +26,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getById(Long id) {
-        return categoryRepository.findById(id).orElseThrow();
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Категория с ID " + id + " не найдена!"));
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category update(Category category) {
         Optional<Category> existingUser = categoryRepository.findById(category.getId());
         if (existingUser.isEmpty()) {
-            throw new NoSuchElementException("Категория не найдена!");
+            throw new NoSuchElementException("Категория с ID " + category.getId() + " не найдена!");
         }
 
         return categoryRepository.save(category);
@@ -46,6 +47,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteById(Long id) {
-        categoryRepository.deleteById(id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Категория с ID " + id + " не найдена!"));
+        categoryRepository.delete(category);
     }
 }

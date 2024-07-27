@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skillbox.news.aop.CheckUserId;
 import ru.skillbox.news.dto.comment.CommentListResponse;
 import ru.skillbox.news.dto.comment.CommentRequest;
 import ru.skillbox.news.dto.comment.CommentResponse;
@@ -42,7 +41,6 @@ public class CommentController {
                 .body(commentMapper.toResponse(comment));
     }
 
-    @CheckUserId
     @PutMapping("/{id}")
     public ResponseEntity<CommentResponse> update(@PathVariable Long id, @RequestBody CommentRequest request) {
         Comment comment = commentMapper.toEntity(request);
@@ -50,7 +48,6 @@ public class CommentController {
         return ResponseEntity.ok(commentMapper.toResponse(commentService.update(comment)));
     }
 
-    @CheckUserId
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         commentService.deleteById(id);

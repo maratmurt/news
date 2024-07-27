@@ -25,7 +25,7 @@ public class Comment {
     private Article article;
 
     @NotNull(message = "Это поле должно быть заполнено!")
-    @Size(min = 2, max = 1000, message = "Текст должен быть длиной не меньше 2 символов!")
+    @Size(min = 2, max = 1000, message = "Текст должен быть длиной не меньше {min} символов!")
     private String text;
 
 }

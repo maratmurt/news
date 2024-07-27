@@ -27,7 +27,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article getById(Long id) {
-        return articleRepository.findById(id).orElseThrow();
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Статья с ID " + id + " не найдена!"));
     }
 
     @Override
@@ -39,7 +40,7 @@ public class ArticleServiceImpl implements ArticleService {
     public Article update(Article article) {
         Optional<Article> existingArticle = articleRepository.findById(article.getId());
         if (existingArticle.isEmpty()) {
-            throw new NoSuchElementException("Статья не найдена!");
+            throw new NoSuchElementException("Статья с ID " + article.getId() + " не найдена!");
         }
 
         return articleRepository.save(article);
@@ -47,7 +48,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void deleteById(Long id) {
-        articleRepository.deleteById(id);
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Статья с ID " + id + " не найдена!"));
+        articleRepository.delete(article);
     }
 
     @Override

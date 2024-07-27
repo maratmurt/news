@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skillbox.news.aop.CheckUserId;
 import ru.skillbox.news.dto.article.*;
 import ru.skillbox.news.mapper.ArticleMapper;
 import ru.skillbox.news.model.Article;
@@ -48,7 +47,6 @@ public class ArticleController {
                 .body(articleMapper.toWithCommentsResponse(article));
     }
 
-    @CheckUserId
     @PutMapping("/{id}")
     public ResponseEntity<ArticleResponse> update(@PathVariable Long id, @RequestBody ArticleRequest request) {
         Article article = articleMapper.toEntity(request);
@@ -56,7 +54,6 @@ public class ArticleController {
         return ResponseEntity.ok(articleMapper.toResponse(articleService.update(article)));
     }
 
-    @CheckUserId
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         articleService.deleteById(id);

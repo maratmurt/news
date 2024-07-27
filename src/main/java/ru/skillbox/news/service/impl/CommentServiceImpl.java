@@ -23,8 +23,7 @@ public class CommentServiceImpl implements CommentService {
     private final ArticleRepository articleRepository;
 
     public List<Comment> getAllByArticleId(Long articleId) {
-        Article article = articleRepository.findById(articleId).orElseThrow();
-        return commentRepository.findAllByArticle(article);
+        return commentRepository.findAllByArticleId(articleId);
     }
 
     @Override
@@ -34,12 +33,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment getById(Long id) {
-        return commentRepository.findById(id).orElseThrow();
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Комментарий с ID " + id + " не найден!"));
     }
 
     @Override
     public Comment create(Comment comment) {
-        Article article = articleRepository.findById(comment.getArticle().getId()).orElseThrow();
+        Long articleId = comment.getArticle().getId();
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new NoSuchElementException("Статья с ID " + articleId + " не найдена!"));
         article.setCommentCount(article.getCommentCount() + 1);
         articleRepository.save(article);
         return commentRepository.save(comment);
@@ -49,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment update(Comment comment) {
         Optional<Comment> existingArticle = commentRepository.findById(comment.getId());
         if (existingArticle.isEmpty()) {
-            throw new NoSuchElementException("Статья не найдена!");
+            throw new NoSuchElementException("Комментарий с ID " + comment.getId() + " не найден!");
         }
 
         return commentRepository.save(comment);
@@ -57,8 +59,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteById(Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow();
-        Article article = articleRepository.findById(comment.getArticle().getId()).orElseThrow();
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Комментарий с ID " + id + " не найден!"));
+        Article article = comment.getArticle();
         article.setCommentCount(article.getCommentCount() - 1);
         articleRepository.save(article);
         commentRepository.delete(comment);
