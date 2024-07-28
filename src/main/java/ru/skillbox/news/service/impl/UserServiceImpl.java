@@ -9,6 +9,7 @@ import ru.skillbox.news.model.User;
 import ru.skillbox.news.repository.UserRepository;
 import ru.skillbox.news.service.UserService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -19,9 +20,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public Page<User> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
+    public List<User> getAll(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size)).toList();
     }
 
     @Override

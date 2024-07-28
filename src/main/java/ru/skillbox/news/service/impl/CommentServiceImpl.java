@@ -27,8 +27,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Page<Comment> getAll(int page, int size) {
-        return commentRepository.findAll(PageRequest.of(page, size));
+    public List<Comment> getAll(int page, int size) {
+        return commentRepository.findAll(PageRequest.of(page, size)).toList();
     }
 
     @Override
@@ -42,7 +42,6 @@ public class CommentServiceImpl implements CommentService {
         Long articleId = comment.getArticle().getId();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new NoSuchElementException("Статья с ID " + articleId + " не найдена!"));
-        article.setCommentCount(article.getCommentCount() + 1);
         articleRepository.save(article);
         return commentRepository.save(comment);
     }
@@ -61,9 +60,6 @@ public class CommentServiceImpl implements CommentService {
     public void deleteById(Long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Комментарий с ID " + id + " не найден!"));
-        Article article = comment.getArticle();
-        article.setCommentCount(article.getCommentCount() - 1);
-        articleRepository.save(article);
         commentRepository.delete(comment);
     }
 }

@@ -27,17 +27,17 @@ public class Article {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Category category;
 
-    @NotNull(message = "Это поле должно быть заполнено!")
+    @NotNull(message = "Поле заголовка должно быть заполнено!")
     private String title;
 
     @Column(columnDefinition = "text")
-    @NotNull(message = "Это поле должно быть заполнено!")
+    @NotNull(message = "Поле содержания должно быть заполнено!")
     private String content;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @Column(name = "comment_count")
-    private Long commentCount = 0L;
+    @Transient
+    private Long commentCount;
 
 }

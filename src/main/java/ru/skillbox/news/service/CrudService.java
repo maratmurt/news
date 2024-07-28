@@ -1,10 +1,10 @@
 package ru.skillbox.news.service;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
 
 public interface CrudService<T> {
 
-    Page<T> getAll(int page, int size);
+    List<T> getAll(int page, int size);
 
     T getById(Long id);
 

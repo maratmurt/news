@@ -1,14 +1,13 @@
 package ru.skillbox.news.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.news.model.Category;
 import ru.skillbox.news.repository.CategoryRepository;
 import ru.skillbox.news.service.CategoryService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -19,9 +18,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Page<Category> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return categoryRepository.findAll(pageable);
+    public List<Category> getAll(int page, int size) {
+        return categoryRepository.findAll(PageRequest.of(page, size)).toList();
     }
 
     @Override

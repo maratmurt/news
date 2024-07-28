@@ -30,7 +30,7 @@ public class ArticleController {
             authorIds = filter.authorIds();
         }
         List<ArticleResponse> articles = articleService
-                .getAllFiltered(page, size, categoryIds, authorIds)
+                .getAllFiltered(page, size, categoryIds, authorIds).stream()
                 .map(articleMapper::toResponse).toList();
         return ResponseEntity.ok(new ArticleListResponse(articles));
     }
