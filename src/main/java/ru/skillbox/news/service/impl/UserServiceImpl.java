@@ -1,9 +1,7 @@
 package ru.skillbox.news.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.news.model.User;
 import ru.skillbox.news.repository.UserRepository;
@@ -51,4 +49,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + id + " не найден!"));
         userRepository.delete(user);
     }
+
+    @Override
+    public User getByName(String name) {
+        return userRepository.findByName(name)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь с именем " + name + " не найден!"));
+    }
+
 }

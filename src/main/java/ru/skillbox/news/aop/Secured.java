@@ -7,5 +7,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CheckUserId {
+public @interface Secured {
+
+    String[] roles();
+
 }

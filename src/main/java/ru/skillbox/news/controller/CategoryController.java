@@ -3,6 +3,7 @@ package ru.skillbox.news.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.news.dto.category.CategoryListResponse;
 import ru.skillbox.news.dto.category.CategoryRequest;
@@ -36,6 +37,7 @@ public class CategoryController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR')")
     public ResponseEntity<CategoryResponse> create(@RequestBody CategoryRequest categoryRequest) {
         Category category = categoryService.create(categoryMapper.toEntity(categoryRequest));
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -43,6 +45,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR')")
     public ResponseEntity<CategoryResponse> update(@PathVariable Long id, @RequestBody CategoryRequest categoryRequest) {
         Category category = categoryMapper.toEntity(categoryRequest);
         category.setId(id);
@@ -50,6 +53,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MODERATOR')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();

@@ -3,6 +3,7 @@ package ru.skillbox.news.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.news.dto.user.UserListResponse;
 import ru.skillbox.news.dto.user.UserRequest;
@@ -23,6 +24,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserListResponse> getAll(@RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size) {
         List<UserResponse> users = userService.getAll(page, size).stream()

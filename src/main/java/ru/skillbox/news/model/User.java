@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "\"user\"")
@@ -29,5 +30,10 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Set<RoleType> roles;
 
 }

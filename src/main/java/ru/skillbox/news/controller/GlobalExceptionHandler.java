@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleValidationException(ConstraintViolationException e) {
 
         String errors = e.getConstraintViolations().stream()
@@ -24,9 +24,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(new ErrorResponse(errors));
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleNotFoundException(NoSuchElementException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleSecurityException(SecurityException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse(e.getMessage()));
     }
 
