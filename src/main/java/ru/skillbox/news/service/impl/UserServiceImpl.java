@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.skillbox.news.model.RoleType;
 import ru.skillbox.news.model.User;
 import ru.skillbox.news.repository.UserRepository;
 import ru.skillbox.news.service.UserService;
@@ -11,6 +12,7 @@ import ru.skillbox.news.service.UserService;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     public User create(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+        user.setRoles(Set.of(RoleType.ROLE_USER));
         return userRepository.save(user);
     }
 
@@ -44,6 +47,10 @@ public class UserServiceImpl implements UserService {
         if (existingUser.isEmpty()) {
             throw new NoSuchElementException("Пользователь с ID " + user.getId() + " не найден!");
         }
+
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        user.setRoles(Set.of(RoleType.ROLE_USER));
 
         return userRepository.save(user);
     }

@@ -13,6 +13,8 @@ import ru.skillbox.news.model.User;
 import ru.skillbox.news.repository.CategoryRepository;
 import ru.skillbox.news.repository.UserRepository;
 
+import java.util.NoSuchElementException;
+
 @Mapper(componentModel = "spring", uses = {CommentMapper.class, UserRepository.class})
 public abstract class ArticleMapper {
 
@@ -37,12 +39,14 @@ public abstract class ArticleMapper {
 
     @Named("loadAuthorById")
     public User loadAuthorById(Long authorId) {
-        return userRepository.findById(authorId).orElseThrow();
+        return userRepository.findById(authorId).orElseThrow(() ->
+                new NoSuchElementException("Автор не найден!"));
     }
 
     @Named("loadCategoryById")
     public Category loadCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow();
+        return categoryRepository.findById(categoryId).orElseThrow(() ->
+                new NoSuchElementException("Категория не найдена!"));
     }
 
 }
