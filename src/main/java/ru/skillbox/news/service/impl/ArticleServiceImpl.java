@@ -4,15 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ru.skillbox.news.mapper.NullAwareMapper;
 import ru.skillbox.news.model.Article;
 import ru.skillbox.news.model.ArticleSpecification;
 import ru.skillbox.news.repository.ArticleRepository;
 import ru.skillbox.news.repository.CommentRepository;
 import ru.skillbox.news.service.ArticleService;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
 
     private final CommentRepository commentRepository;
+
+    private final NullAwareMapper nullAwareMapper;
 
     @Override
     public List<Article> getAll(int page, int size) {
@@ -39,13 +42,17 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Article update(Article article) {
-        Optional<Article> existingArticle = articleRepository.findById(article.getId());
-        if (existingArticle.isEmpty()) {
-            throw new NoSuchElementException("Статья с ID " + article.getId() + " не найдена!");
+    public Article update(Article updatedArticle) {
+        Article existingArticle = articleRepository.findById(updatedArticle.getId()).orElseThrow(() ->
+                new NoSuchElementException("Статья с ID " + updatedArticle.getId() + " не найдена!"));
+
+        try {
+            nullAwareMapper.copyProperties(existingArticle, updatedArticle);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
 
-        return articleRepository.save(article);
+        return articleRepository.save(existingArticle);
     }
 
     @Override

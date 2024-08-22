@@ -21,7 +21,6 @@ public abstract class CommentMapper {
     @Autowired
     protected UserRepository userRepository;
 
-    @Mapping(target = "user", source = "userId", qualifiedByName = "loadUserById")
     @Mapping(target = "article", source = "articleId", qualifiedByName = "loadArticleById")
     public abstract Comment toEntity(CommentRequest commentRequest);
 

@@ -33,7 +33,6 @@ public abstract class ArticleMapper {
     @Mapping(target = "category", source = "category.name")
     public abstract ArticleWithCommentsResponse toWithCommentsResponse(Article article);
 
-    @Mapping(target = "author", source = "authorId", qualifiedByName = "loadAuthorById")
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "loadCategoryById")
     public abstract Article toEntity(ArticleRequest articleRequest);
 
