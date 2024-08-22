@@ -5,7 +5,6 @@ spring:
     password: postgres
     hikari:
       schema: news
-      connection-init-sql: CREATE SCHEMA IF NOT EXISTS news
       connection-timeout: 10000
   jpa:
     hibernate:

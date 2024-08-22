@@ -2,6 +2,7 @@ package ru.skillbox.news.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skillbox.news.model.User;
 import ru.skillbox.news.repository.UserRepository;
@@ -17,6 +18,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public List<User> getAll(int page, int size) {
         return userRepository.findAll(PageRequest.of(page, size)).toList();
@@ -30,6 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 

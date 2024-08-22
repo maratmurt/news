@@ -17,11 +17,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Это поле должно быть заполнено!")
+    @NotNull(message = "Необходимо указать имя пользователя!")
     @Size(min = 2, max = 30, message = "Имя должно быть длиной от {min} до {max} символов!")
     private String name;
 
-    @NotNull(message = "Это поле должно быть заполнено!")
+    @NotNull(message = "Необходимо указать электронную почту!")
     @Email(message = "Некорректный адрес электронной почты!")
     private String email;
 
@@ -31,6 +31,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
+    @NotNull(message = "Необходимо указать пароль!")
     private String password;
 
     @Enumerated(EnumType.STRING)
